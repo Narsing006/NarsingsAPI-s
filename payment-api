@@ -1,0 +1,96 @@
+#%RAML 1.0
+title: payment-api
+version: v1
+baseUri: https://anypoint.mulesoft.com/mocking/api/v1/links/32e83f91-8e73-434b-8d27-616c2dbca748
+
+/accounts:
+  post:
+    description: "Initiate a payment from one account to another"
+    body:
+      application/json:
+        example:
+          {
+            "payerId": "12345",
+            "recipientId": "67890",
+            "amount": 200.00,
+            "currency": "INR",
+            "paymentMethod": "credit_card",
+            "paymentDetails": {
+              "cardNumber": "41111111111111",
+              "expiryDate": "12/26",
+              "cvv": "124"
+              }
+            }
+    responses:
+      200:
+        description: "Payment initiated successfully"
+        body:
+          application/json:
+            example:
+              {
+                "status": "success",
+                "transactionId": "txn123456789"
+              }
+      400:
+        description: "Invalid payment request"
+        body:
+          application/json:
+            example:
+              {
+                "error": "Invalid payment details"
+              }
+/status:
+  get:
+    description: "Check the status of a payment"
+    queryParameters:
+      transactionId:
+        description: "The unique transaction ID"
+        type: string
+        required: true
+    responses:
+      200:
+        description: "payment status"
+        body:
+          application/json:
+            example:
+              {
+                "transaction": "txn123456789",
+                "status": "completed"
+              }
+      404:
+        description: "Transaction not found"
+        body:
+          application/json:
+            example:
+              {
+                "error": "Transaction not found"
+              }
+/transactions:
+  get:
+    description: "Retrieve the transaction history for a user"
+    queryParameters:
+      userId:
+        description: "User ID for transaction history"
+        type: string
+        required: true
+    responses:
+      200:
+        description: "Transaction history"
+        body:
+          application/json:
+            example:
+              [
+                {
+                  "transactionId": "txn123456789",
+                  "amount": 200.00,
+                  "status": "completed"
+                },
+                {
+                  "transactionId": "txn1234567890",
+                  "amount": 300.00,
+                  "status": "pending"
+                }
+              ]
+          
+          
+          
